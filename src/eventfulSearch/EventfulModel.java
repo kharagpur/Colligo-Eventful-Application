@@ -187,7 +187,6 @@ public class EventfulModel {
 	
 	public String toString(){
 		String str = "";
-		String sDate;
 		str = str.concat("Address:    " + this.street + "\n");
 		str = str.concat("            " + this.city + "\n");
 		str = str.concat("            " + this.state + "\n");
