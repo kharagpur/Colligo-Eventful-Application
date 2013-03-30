@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 public class EventfulModel {
@@ -59,11 +60,39 @@ public class EventfulModel {
 		try {
 			startDate = EventfulModel.Formatter.parse(inputArgs[2].trim());
 			endDate = EventfulModel.Formatter.parse(inputArgs[3].trim());
-			
+
 			//TODO: there are many validations that needs to be done according to the specifications
 		} catch (ParseException e) {
 			throw new EventfulSearchException("start date or end date does not follow the format ddMMyyyy", e);
 		}
+		
+		// validate date
+		
+		// Next year
+		Calendar oneYear = Calendar.getInstance();
+		oneYear.add(Calendar.YEAR, 1);
+		// Search interval
+		Calendar daysAfterStart = Calendar.getInstance();
+		daysAfterStart.setTime(startDate);
+		daysAfterStart.add(Calendar.DATE, 28);
+		
+		// Date Start >= current date
+		if (Calendar.getInstance().after(startDate)) {
+			throw new EventfulSearchException("start date range must be after current date");
+		}
+		// Date Start < Date End
+		else if (startDate.after(endDate)) {
+			throw new EventfulSearchException("start date cannot be after end date");
+		}
+		// Maximum number of days to search for is 28.
+		else if(endDate.after(daysAfterStart.getTime())) {
+			throw new EventfulSearchException("end date should be within 28 days of start date");
+		}
+		// Year < current year, Year > current Year + 1
+		else if(endDate.after(oneYear.getTime())) {
+			throw new EventfulSearchException("end date should be set to within a year");
+		}
+
 		
 		String category = "Music"; // default value for category
 		if(inputArgs.length == 5) { 
@@ -76,14 +105,12 @@ public class EventfulModel {
 		return new EventfulModel(street, city, state, radius, startDate, endDate, category);
 	}
 	
+	
 	// call google Map API
 	public void generateLatLong() {
-//		GoogleAddressProcessor addressQuery = new GoogleAddressProcessor(this.getStreet(), this.getCity(), this.getState());
 		GoogleAddressProcessor addressQuery = new GoogleAddressProcessor();
 		if (addressQuery.isValidAddress(this.getStreet(), this.getCity(), this.getState())){
 			try {
-//				this.longitude = Double.valueOf(addressQuery.getLongitude());
-//				this.latitude = Double.valueOf(addressQuery.getLatitude());
 				this.longitude = addressQuery.getLongitude();
 				this.latitude = addressQuery.getLatitude();
 			} catch (NumberFormatException e) {

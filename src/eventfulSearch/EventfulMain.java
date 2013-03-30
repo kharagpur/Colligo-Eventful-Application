@@ -7,7 +7,7 @@ public class EventfulMain {
 	
 	public static void main(String[] args) {
 //		String[] inputArgs = args[0].split("|"); 
-		String[] inputArgs = "4788 Hazel Street, Burnaby, BC | 103 | 29032013 | 29042013".split("\\|");
+		String[] inputArgs = "4788 Hazel Street, Burnaby, BC | 103 | 29032013 | 05042013".split("\\|");
 //		System.out.println("inputArgs Length: " + inputArgs.length);
 //		for(int i=0; i<inputArgs.length; i++) {
 //			System.out.println(i + " " + inputArgs[i]);
